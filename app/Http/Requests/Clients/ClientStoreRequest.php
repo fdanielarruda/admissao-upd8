@@ -22,7 +22,7 @@ class ClientStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cpf' => ['required', 'string', 'max:14', 'unique:clients,cpf'],
+            'cpf' => ['required', 'string', 'max:14', 'unique:clients,cpf', 'cpf'],
             'name' => ['required', 'string', 'max:255'],
             'birthdate' => ['required', 'date'],
             'gender' => ['required', 'string', 'in:m,f'],

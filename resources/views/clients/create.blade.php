@@ -37,7 +37,7 @@
                         <div class="md:flex md:space-x-4">
                             <div class="mb-4 w-full md:w-1/2">
                                 <x-input-label for="cpf" value="CPF" />
-                                <x-text-input id="cpf" class="block mt-1 w-full" type="text" name="cpf" :value="old('cpf', $client->cpf ?? '')" required autofocus />
+                                <x-text-input id="cpf" class="block mt-1 w-full" type="text" name="cpf" :value="old('cpf', $client->cpf ?? '')" required autofocus maxlength="11" />
                                 <x-input-error :messages="$errors->get('cpf')" class="mt-2" />
                             </div>
 

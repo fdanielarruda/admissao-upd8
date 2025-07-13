@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('representatives', function (Blueprint $table) {
             $table->id();
+            $table->string('cpf');
             $table->string('name');
             $table->timestamps();
         });

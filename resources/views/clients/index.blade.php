@@ -19,7 +19,7 @@
                     @endif
 
                     <form action="{{ route('clients.index') }}" method="GET" class="mb-4 p-4 bg-gray-50 rounded-lg shadow-sm">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                             <div>
                                 <label for="name" class="block text-sm font-medium text-gray-700">Nome</label>
                                 <input type="text" name="name" id="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" value="{{ request('name') }}">

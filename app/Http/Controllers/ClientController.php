@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Clients\ClientStoreRequest;
 use App\Http\Requests\Clients\ClientUpdateRequest;
 use App\Services\ClientService;
+use App\Models\City; // Import City model
 
 class ClientController
 {
@@ -16,10 +17,30 @@ class ClientController
     {
         $per_page = request()->query('per_page', 10);
 
-        $clients = $this->service->listWithPaginate($per_page);
+        // Get filter parameters from the request
+        $filters = request()->only(['name', 'cpf', 'birthdate', 'gender', 'uf', 'city_id']);
+
+        $clients = $this->service->listWithPaginate($per_page, $filters);
+
+        // Get UFs for the filter dropdown
+        $ufs = City::select('uf')
+            ->distinct()
+            ->orderBy('uf')
+            ->get();
+
+        // Get cities based on selected UF for the filter dropdown
+        $cities = collect(); // Initialize as an empty collection
+        if (isset($filters['uf']) && $filters['uf']) {
+            $cities = City::where('uf', $filters['uf'])
+                ->orderBy('name')
+                ->get();
+        }
+
 
         return view('clients.index', [
-            'clients' => $clients
+            'clients' => $clients,
+            'ufs' => $ufs,
+            'cities' => $cities, // Pass cities to the view
         ]);
     }
 

@@ -41,17 +41,19 @@ class RepresentativeService
 
         $representativeCityIds = $representative->cities->pluck('id')->toArray();
 
-        $representativeUfs = $representative->cities->pluck('uf')->unique()->toArray();
+        $allUfsWithCities = City::select('uf', 'id')->get()->groupBy('uf');
 
-        $allUfs = City::select('uf')
-            ->distinct()
-            ->get()
-            ->pluck('uf')
-            ->sort();
+        $availableUfs = collect();
+        foreach ($allUfsWithCities as $ufCode => $citiesInUf) {
+            $allCityIdsInUf = $citiesInUf->pluck('id')->toArray();
 
-        $availableUfs = $allUfs->filter(fn($ufItem) => !in_array($ufItem, $representativeUfs))
-            ->map(fn($ufItem) => (object)['uf' => $ufItem])
-            ->values();
+            $unassignedCitiesInUf = array_diff($allCityIdsInUf, $representativeCityIds);
+
+            if (!empty($unassignedCitiesInUf)) {
+                $availableUfs->push((object)['uf' => $ufCode]);
+            }
+        }
+        $availableUfs = $availableUfs->sortBy('uf')->values();
 
         $cities = collect();
 

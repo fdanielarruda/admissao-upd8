@@ -33,9 +33,9 @@ class RepresentativeController
 
     public function store(RepresentativeStoreRequest $request)
     {
-        $this->service->store($request->validated());
+        $represenative = $this->service->store($request->validated());
 
-        return redirect()->route('representatives.index')->with('success', 'Representante cadastrado com sucesso!');
+        return redirect()->route('representatives.cities.edit', $represenative->id)->with('success', 'Representante cadastrado com sucesso!');
     }
 
     public function edit(int $id)
@@ -49,7 +49,7 @@ class RepresentativeController
     {
         $this->service->update($id, $request->validated());
 
-        return redirect()->route('representatives.index')->with('success', 'Representante cadastrado com sucesso!');
+        return redirect()->route('representatives.index')->with('success', 'Representante atualizado com sucesso!');
     }
 
     public function editCities(int $id)

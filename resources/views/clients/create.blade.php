@@ -56,11 +56,16 @@
 
                         <div class="mb-4">
                             <x-input-label for="gender" value="Sexo" />
-                            <select id="gender" name="gender" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block mt-1 w-full" required>
-                                <option value="">Selecione</option>
-                                <option value="m" {{ old('gender', $client->gender ?? '') == 'm' ? 'selected' : '' }}>Masculino</option>
-                                <option value="f" {{ old('gender', $client->gender ?? '') == 'f' ? 'selected' : '' }}>Feminino</option>
-                            </select>
+                            <div class="mt-1">
+                                <label for="gender_m" class="inline-flex items-center">
+                                    <input type="radio" id="gender_m" name="gender" value="m" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" {{ old('gender', $client->gender ?? '') == 'm' ? 'checked' : '' }} required>
+                                    <span class="ms-2 text-sm text-gray-600">Masculino</span>
+                                </label>
+                                <label for="gender_f" class="inline-flex items-center ms-6">
+                                    <input type="radio" id="gender_f" name="gender" value="f" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" {{ old('gender', $client->gender ?? '') == 'f' ? 'checked' : '' }} required>
+                                    <span class="ms-2 text-sm text-gray-600">Feminino</span>
+                                </label>
+                            </div>
                             <x-input-error :messages="$errors->get('gender')" class="mt-2" />
                         </div>
 

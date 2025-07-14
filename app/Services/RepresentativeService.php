@@ -30,14 +30,8 @@ class RepresentativeService
     {
         $representative = Representative::findOrFail($id);
 
-        $ufs = City::select('uf')
-            ->distinct()
-            ->get()
-            ->sortBy('uf');
-
         return [
-            'representative' => $representative,
-            'ufs' => $ufs
+            'representative' => $representative
         ];
     }
 
@@ -45,26 +39,38 @@ class RepresentativeService
     {
         $representative = Representative::with('cities')->findOrFail($id);
 
-        $ufs = City::select('uf')
+        $representativeCityIds = $representative->cities->pluck('id')->toArray();
+
+        $representativeUfs = $representative->cities->pluck('uf')->unique()->toArray();
+
+        $allUfs = City::select('uf')
             ->distinct()
             ->get()
-            ->sortBy('uf');
+            ->pluck('uf')
+            ->sort();
+
+        $availableUfs = $allUfs->filter(fn($ufItem) => !in_array($ufItem, $representativeUfs))
+            ->map(fn($ufItem) => (object)['uf' => $ufItem])
+            ->values();
 
         $cities = collect();
 
         if ($uf) {
-            $cities = City::where('uf', $uf)->orderBy('name')->get();
+            $cities = City::where('uf', $uf)
+                ->whereNotIn('id', $representativeCityIds)
+                ->orderBy('name')
+                ->get();
         }
 
         return [
             'representative' => $representative,
-            'ufs' => $ufs,
+            'ufs' => $availableUfs,
             'cities' => $cities,
             'selectedUf' => $uf
         ];
     }
 
-    public function store(array $data)
+    public function store(array $data): Representative
     {
         return Representative::create($data);
     }

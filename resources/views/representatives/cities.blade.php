@@ -59,7 +59,7 @@
                                 </option>
                                 @endif
                                 @empty
-                                <option value="">Selecione um Estado para carregar as cidades ou não há mais cidades para adicionar neste UF.</option>
+                                <option value="">Selecione um Estado</option>
                                 @endforelse
                             </select>
                             <x-input-error :messages="$errors->get('city_id')" class="mt-2" />

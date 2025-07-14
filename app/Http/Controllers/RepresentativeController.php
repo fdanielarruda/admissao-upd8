@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Representatives\RepresentativeCitiesRequest;
 use App\Http\Requests\Representatives\RepresentativeStoreRequest;
 use App\Http\Requests\Representatives\RepresentativeUpdateRequest;
 use App\Services\RepresentativeService;
@@ -51,10 +52,31 @@ class RepresentativeController
         return redirect()->route('representatives.index')->with('success', 'Representante cadastrado com sucesso!');
     }
 
+    public function editCities(int $id)
+    {
+        $uf = request()->query('uf') ?? null;
+
+        $data = $this->service->prepareForCityManagement($id, $uf);
+
+        return view('representatives.cities', $data);
+    }
+
     public function destroy(int $id)
     {
         $this->service->delete($id);
 
         return redirect()->route('representatives.index')->with('success', 'Representante excluído com sucesso!');
+    }
+
+    public function addCity(RepresentativeCitiesRequest $request, int $id)
+    {
+        $this->service->addCity($id, $request->city_id);
+        return redirect()->route('representatives.cities.edit', $id)->with('success', 'Cidade adicionada com sucesso!');
+    }
+
+    public function detachCity(int $id, int $city_id)
+    {
+        $this->service->detachCity($id, $city_id);
+        return redirect()->route('representatives.cities.edit', $id)->with('success', 'Cidade removida com sucesso!');
     }
 }

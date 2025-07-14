@@ -24,6 +24,7 @@
                                 <tr>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Representante</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CPF</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cidades Atendidas</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
                                 </tr>
                             </thead>
@@ -32,8 +33,29 @@
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $representative->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $representative->cpf }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">
+                                        @php
+                                        $citiesCount = $representative->cities->count();
+                                        $displayedCities = $representative->cities->sortBy('name')->take(3);
+                                        @endphp
+
+                                        @forelse ($displayedCities as $city)
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mr-2 mb-1">
+                                            {{ $city->name }}
+                                        </span>
+                                        @empty
+                                        Nenhuma cidade associada.
+                                        @endforelse
+
+                                        @if ($citiesCount > 3)
+                                        <a href="{{ route('representatives.cities.edit', $representative->id) }}" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-200 text-gray-800 hover:bg-gray-300 transition-colors duration-200">
+                                            + {{ $citiesCount - 3 }}
+                                        </a>
+                                        @endif
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <a href="{{ route('representatives.edit', $representative->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-4">Editar</a>
+                                        <a href="{{ route('representatives.cities.edit', $representative->id) }}" class="text-green-600 hover:text-green-900 mr-4">Cidades</a>
                                         <form action="{{ route('representatives.destroy', $representative->id) }}" method="POST" class="inline" onsubmit="return confirm('Tem certeza que deseja excluir este representante?');">
                                             @csrf
                                             @method('DELETE')
@@ -43,7 +65,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="7" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Nenhum representante encontrado.</td>
+                                    <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Nenhum representante encontrado.</td>
                                 </tr>
                                 @endforelse
                             </tbody>

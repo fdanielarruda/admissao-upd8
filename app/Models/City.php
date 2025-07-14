@@ -10,4 +10,9 @@ class City extends Model
         'uf',
         'name'
     ];
+
+    public function representatives()
+    {
+        return $this->belongsToMany(Representative::class);
+    }
 }

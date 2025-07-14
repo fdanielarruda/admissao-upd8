@@ -9,7 +9,8 @@ class RepresentativeService
 {
     public function listWithPaginate(?int $per_page = 10)
     {
-        return Representative::orderBy('name', 'asc')
+        return Representative::with('cities')
+            ->orderBy('name', 'asc')
             ->paginate($per_page);
     }
 
@@ -40,6 +41,29 @@ class RepresentativeService
         ];
     }
 
+    public function prepareForCityManagement(int $id, ?string $uf = null)
+    {
+        $representative = Representative::with('cities')->findOrFail($id);
+
+        $ufs = City::select('uf')
+            ->distinct()
+            ->get()
+            ->sortBy('uf');
+
+        $cities = collect();
+
+        if ($uf) {
+            $cities = City::where('uf', $uf)->orderBy('name')->get();
+        }
+
+        return [
+            'representative' => $representative,
+            'ufs' => $ufs,
+            'cities' => $cities,
+            'selectedUf' => $uf
+        ];
+    }
+
     public function store(array $data)
     {
         return Representative::create($data);
@@ -57,5 +81,20 @@ class RepresentativeService
     {
         $representative = Representative::findOrFail($id);
         $representative->delete();
+    }
+
+    public function addCity(int $id, int $city_id)
+    {
+        $representative = Representative::findOrFail($id);
+
+        if (!$representative->cities->contains($city_id)) {
+            $representative->cities()->attach($city_id);
+        }
+    }
+
+    public function detachCity(int $id, int $city_id)
+    {
+        $representative = Representative::findOrFail($id);
+        $representative->cities()->detach($city_id);
     }
 }

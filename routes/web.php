@@ -31,6 +31,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/representantes/{id}', [RepresentativeController::class, 'edit'])->name('representatives.edit');
     Route::put('/representantes/{id}', [RepresentativeController::class, 'update'])->name('representatives.update');
     Route::delete('/representantes/{id}', [RepresentativeController::class, 'destroy'])->name('representatives.destroy');
+
+    Route::get('/representantes/{id}/cidades', [RepresentativeController::class, 'editCities'])->name('representatives.cities.edit');
+    Route::put('/representantes/{id}/cidades', [RepresentativeController::class, 'addCity'])->name('representatives.cities.update');
+    Route::delete('/representantes/{id}/cidades/{city_id}', [RepresentativeController::class, 'detachCity'])->name('representatives.cities.detach');
 });
 
 require __DIR__ . '/auth.php';
